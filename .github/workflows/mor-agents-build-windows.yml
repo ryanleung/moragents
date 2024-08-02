@@ -5,16 +5,17 @@ on:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch: # remove this - only for testing
 
 jobs:
   build:
     runs-on: windows-latest
     
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v5
       with:
         python-version: '3.x'
 
@@ -32,7 +33,7 @@ jobs:
 
     - name: Compile Inno Setup Script
       run: |
-        iscc /O".\MORagentsWindowsInstaller" "MORagents_setup.iss"
+        iscc /O".\MORagentsWindowsInstaller" "wizard_windows.iss"
 
     - name: Upload Installer
       uses: actions/upload-artifact@v2
