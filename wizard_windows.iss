@@ -4,10 +4,6 @@ AppVersion=0.0.8
 DefaultDirName={commonpf}\MORagents
 OutputDir=.\MORagentsWindowsInstaller
 OutputBaseFilename=MORagentsSetup
-DiskSpanning=yes
-SlicesPerDisk=1
-DiskSliceSize=max
-Compression=none
 
 [Messages]
 WelcomeLabel1=Welcome to the MORagents Setup Wizard. By proceeding you acknowledge you have read and agreed to the License found at: https://github.com/MorpheusAIs/moragents/blob/778b0aba68ae873d7bb355f2ed4419389369e042/LICENSE
