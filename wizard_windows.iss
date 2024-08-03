@@ -23,11 +23,13 @@ Source: "runtime_setup_windows.py"; DestDir: "{app}"
 Name: "{commondesktop}\MORagents"; Filename: "{app}\MORagents.exe"; IconFilename: "{app}\moragents.ico"
 
 [Run]
+Filename: "{win}\system32\mspaint.exe"; Parameters: """{app}\moragents.ico"""; Flags: nowait postinstall skipifsilent unchecked; Description: "View icon file"
 Filename: "{tmp}\DockerDesktopInstaller.exe"; Parameters: "install"; StatusMsg: "Installing Docker Desktop..."; Flags: waituntilterminated
 Filename: "{tmp}\OllamaSetup.exe"; StatusMsg: "Installing Ollama..."; Flags: waituntilterminated
 Filename: "{app}\LICENSE"; Description: "View License Agreement"; Flags: postinstall shellexec skipifsilent
 Filename: "{app}\MORagents.exe"; Description: "Launch MORagents"; Flags: postinstall nowait skipifsilent unchecked
 Filename: "cmd.exe"; Parameters: "/c ollama pull llama3 && ollama pull nomic-embed-text"; StatusMsg: "Pulling Ollama models..."; Flags: runhidden waituntilterminated
+
 
 [Code]
 var
