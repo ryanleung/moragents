@@ -20,9 +20,9 @@ Source: "runtime_setup_windows.py"; DestDir: "{app}"
 Name: "{commondesktop}\MORagents"; Filename: "{app}\MORagents.exe"; IconFilename: "{app}\moragents.ico"
 
 [Run]
-Filename: "{app}\LICENSE"; Description: "License Agreement"; Flags: postinstall shellexec skipifsilent
 Filename: "powershell.exe"; Parameters: "-NoProfile -ExecutionPolicy Bypass -Command ""$installer = '{tmp}\DockerDesktopInstaller.exe'; Invoke-WebRequest 'https://desktop.docker.com/win/stable/Docker Desktop Installer.exe' -OutFile $installer; Start-Process -FilePath $installer -ArgumentList 'install --quiet' -Wait; Remove-Item $installer"""; \
     StatusMsg: "Downloading and Installing Docker Desktop..."; Flags: runhidden waituntilterminated
+Filename: "{app}\LICENSE"; Description: "License Agreement"; Flags: postinstall shellexec skipifsilent
 Filename: "{app}\MORagents.exe"; Description: "Launch MORagents"; Flags: postinstall nowait skipifsilent unchecked
 
 
@@ -32,17 +32,4 @@ begin
     Result := MsgBox('Please read the license agreement found at https://github.com/MorpheusAIs/moragents/blob/778b0aba68ae873d7bb355f2ed4419389369e042/LICENSE carefully. Do you accept the terms of the License agreement?', mbConfirmation, MB_YESNO) = idYes;
     if not Result then
         MsgBox('Setup cannot continue without accepting the License agreement.', mbInformation, MB_OK);
-end;
-
-procedure CurStepChanged(CurStep: TSetupStep);
-var
-  ResultCode: Integer;
-begin
-  if CurStep = ssPostInstall then
-  begin
-    if not Exec(ExpandConstant('{app}\MORagents.exe'), 'setup_docker', '', SW_HIDE, ewWaitUntilTerminated, ResultCode) then
-    begin
-      MsgBox('Docker setup failed. Please run it manually after installation.', mbError, MB_OK);
-    end;
-  end;
 end;
