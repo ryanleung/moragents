@@ -23,8 +23,6 @@ Name: "{commondesktop}\MORagents"; Filename: "{app}\MORagents.exe"; IconFilename
 Filename: "{app}\LICENSE"; Description: "License Agreement"; Flags: postinstall shellexec skipifsilent
 Filename: "https://desktop.docker.com/win/stable/Docker%20Desktop%20Installer.exe"; Parameters: "install --quiet"; \
     StatusMsg: "Installing Docker Desktop..."; Flags: shellexec runhidden waituntilterminated
-Filename: "{app}\MORagents.exe"; Parameters: "setup_docker"; \
-    StatusMsg: "Setting up Docker images..."; Flags: runhidden waituntilterminated
 
 [Code]
 function InitializeSetup(): Boolean;
