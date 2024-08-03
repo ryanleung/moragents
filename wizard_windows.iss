@@ -14,7 +14,7 @@ Source: "dist\MORagents\MORagents.exe"; DestDir: "{app}"
 Source: "dist\MORagents\_internal\*"; DestDir: "{app}\_internal"; Flags: recursesubdirs
 Source: "images\moragents.ico"; DestDir: "{app}"
 Source: "LICENSE"; DestDir: "{app}"; Flags: isreadme
-Source: "https://desktop.docker.com/win/stable/Docker Desktop Installer.exe"; DestDir: "{tmp}"; DestName: "DockerDesktopInstaller.exe"; Flags: external deleteafterinstall
+Source: "https://desktop.docker.com/win/stable/Docker%20Desktop%20Installer.exe"; DestDir: "{tmp}"; DestName: "DockerDesktopInstaller.exe"; Flags: external
 Source: "runtime_setup_windows.py"; DestDir: "{app}"
 
 [Icons]
