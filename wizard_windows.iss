@@ -7,7 +7,7 @@ OutputBaseFilename=MORagentsSetup
 WizardStyle=modern
 
 [Messages]
-WelcomeLabel1=Welcome to the MORagents Setup Wizard. By proceeding you acknowledge you have read and agreed to the License found at: https://github.com/MorpheusAIs/moragents/blob/778b0aba68ae873d7bb355f2ed4419389369e042/LICENSE
+WelcomeLabel1=Welcome to the MORagents Setup Wizard
 WelcomeLabel2=This will install MORagents on your computer. Please click Next to continue.
 
 [Files]
@@ -25,44 +25,52 @@ Name: "{commondesktop}\MORagents"; Filename: "{app}\MORagents.exe"; IconFilename
 [Run]
 Filename: "{tmp}\DockerDesktopInstaller.exe"; Parameters: "install"; StatusMsg: "Installing Docker Desktop..."; Flags: waituntilterminated
 Filename: "{tmp}\OllamaSetup.exe"; StatusMsg: "Installing Ollama..."; Flags: waituntilterminated
-Filename: "{app}\LICENSE"; Description: "License Agreement"; Flags: postinstall shellexec skipifsilent
+Filename: "{app}\LICENSE"; Description: "View License Agreement"; Flags: postinstall shellexec skipifsilent
 Filename: "{app}\MORagents.exe"; Description: "Launch MORagents"; Flags: postinstall nowait skipifsilent unchecked
 Filename: "cmd.exe"; Parameters: "/c ollama pull llama3 && ollama pull nomic-embed-text"; StatusMsg: "Pulling Ollama models..."; Flags: runhidden waituntilterminated
 
 [Code]
-function InitializeSetup(): Boolean;
-begin
-  Result := MsgBox('Please read the license agreement found at https://github.com/MorpheusAIs/moragents/blob/778b0aba68ae873d7bb355f2ed4419389369e042/LICENSE carefully. Do you accept the terms of the License agreement?', mbConfirmation, MB_YESNO) = idYes;
-  if not Result then
-    MsgBox('Setup cannot continue without accepting the License agreement.', mbInformation, MB_OK);
-end;
-
 var
+  EULAAccepted: Boolean;
   DownloadPage: TDownloadWizardPage;
-
-function OnDownloadProgress(const Url, FileName: String; const Progress, ProgressMax: Int64): Boolean;
-begin
-  if Progress = ProgressMax then
-    Log(Format('Successfully downloaded file to {tmp}: %s', [FileName]));
-  Result := True;
-end;
+  EULAPage: TOutputMsgWizardPage;
 
 procedure InitializeWizard;
 begin
-  DownloadPage := CreateDownloadPage(SetupMessage(msgWizardPreparing), SetupMessage(msgPreparingDesc), @OnDownloadProgress);
+  EULAPage := CreateOutputMsgPage(wpWelcome, 
+    'License Agreement', 'Please read the following License Agreement carefully',
+    'By continuing, you acknowledge that you have read and agreed to the License. ' +
+    'The full license text can be found at: ' +
+    'https://github.com/MorpheusAIs/moragents/blob/778b0aba68ae873d7bb355f2ed4419389369e042/LICENSE' + #13#10 + #13#10 +
+    'Do you accept the terms of the License agreement?');
+
+  DownloadPage := CreateDownloadPage(SetupMessage(msgWizardPreparing), SetupMessage(msgPreparingDesc), nil);
 end;
 
 function NextButtonClick(CurPageID: Integer): Boolean;
 begin
-  if CurPageID = wpReady then
+  Result := True;
+
+  if CurPageID = EULAPage.ID then
   begin
+    EULAAccepted := True;
+  end
+  else if CurPageID = wpReady then
+  begin
+    if not EULAAccepted then
+    begin
+      MsgBox('You must accept the License Agreement to continue.', mbError, MB_OK);
+      Result := False;
+      Exit;
+    end;
+
     DownloadPage.Clear;
     DownloadPage.Add('https://desktop.docker.com/win/stable/Docker%20Desktop%20Installer.exe', 'DockerDesktopInstaller.exe', '');
     DownloadPage.Add('https://ollama.com/download/OllamaSetup.exe', 'OllamaSetup.exe', '');
     DownloadPage.Show;
     try
       try
-        DownloadPage.Download; // This downloads the files to {tmp}
+        DownloadPage.Download;
         Result := True;
       except
         if DownloadPage.AbortedByUser then
@@ -74,7 +82,14 @@ begin
     finally
       DownloadPage.Hide;
     end;
-  end
-  else
+  end;
+end;
+
+function ShouldSkipPage(PageID: Integer): Boolean;
+begin
+  Result := False;
+  
+  { Skip EULA page if already accepted }
+  if (PageID = EULAPage.ID) and EULAAccepted then
     Result := True;
 end;
