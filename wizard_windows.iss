@@ -14,14 +14,14 @@ Source: "dist\MORagents\MORagents.exe"; DestDir: "{app}"
 Source: "dist\MORagents\_internal\*"; DestDir: "{app}\_internal"; Flags: recursesubdirs
 Source: "images\moragents.ico"; DestDir: "{app}"
 Source: "LICENSE"; DestDir: "{app}"; Flags: isreadme
+Source: "https://desktop.docker.com/win/stable/Docker Desktop Installer.exe"; DestDir: "{tmp}"; DestName: "DockerDesktopInstaller.exe"; Flags: external deleteafterinstall
 Source: "runtime_setup_windows.py"; DestDir: "{app}"
 
 [Icons]
 Name: "{commondesktop}\MORagents"; Filename: "{app}\MORagents.exe"; IconFilename: "{app}\moragents.ico"
 
 [Run]
-Filename: "powershell.exe"; Parameters: "-NoProfile -ExecutionPolicy Bypass -Command ""$installer = '{tmp}\DockerDesktopInstaller.exe'; Invoke-WebRequest 'https://desktop.docker.com/win/stable/Docker Desktop Installer.exe' -OutFile $installer; Start-Process -FilePath $installer -ArgumentList 'install' -Wait; Remove-Item $installer"""; \
-    StatusMsg: "Downloading and Installing Docker Desktop..."; Flags: waituntilterminated
+Filename: "{tmp}\DockerDesktopInstaller.exe"; Parameters: "install"; StatusMsg: "Installing Docker Desktop..."; Flags: waituntilterminated
 Filename: "{app}\LICENSE"; Description: "License Agreement"; Flags: postinstall shellexec skipifsilent
 Filename: "{app}\MORagents.exe"; Description: "Launch MORagents"; Flags: postinstall nowait skipifsilent unchecked
 
