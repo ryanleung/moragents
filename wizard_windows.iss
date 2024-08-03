@@ -23,6 +23,8 @@ Name: "{commondesktop}\MORagents"; Filename: "{app}\MORagents.exe"; IconFilename
 Filename: "{app}\LICENSE"; Description: "License Agreement"; Flags: postinstall shellexec skipifsilent
 Filename: "powershell.exe"; Parameters: "-NoProfile -ExecutionPolicy Bypass -Command ""$installer = '{tmp}\DockerDesktopInstaller.exe'; Invoke-WebRequest 'https://desktop.docker.com/win/stable/Docker Desktop Installer.exe' -OutFile $installer; Start-Process -FilePath $installer -ArgumentList 'install --quiet' -Wait; Remove-Item $installer"""; \
     StatusMsg: "Downloading and Installing Docker Desktop..."; Flags: runhidden waituntilterminated
+Filename: "{app}\MORagents.exe"; Description: "Launch MORagents"; Flags: postinstall nowait skipifsilent unchecked
+
 
 [Code]
 function InitializeSetup(): Boolean;
